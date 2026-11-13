@@ -1,8 +1,16 @@
 # Changelog
 
-## Unreleased
+## [Unreleased]
 
-## 0.1.0
+### Added
+
+- Family release workflow: a `v*` tag push dispatches `release.yml` from
+  `main`, which verifies the signed tag against the allowed keys, runs the
+  crate gates, packages the source archive, writes an SBOM, attests
+  provenance, and publishes a GitHub Release with a signed family release
+  manifest.
+
+## [0.1.0]
 
 - Named leases with acquire, renew, and release, and a monotonic fencing token
   per acquisition.
@@ -13,3 +21,5 @@
 - Moved from `Sannrox/agent-kit` (`crates/fencing-lease`) with its history.
   No API or behavior change. Declared minimum Rust is 1.88, which the locked
   dependencies already required.
+- The `v0.1.0` tag was cut by an agent outside the release workflow and has
+  no GitHub Release; consumers pin it as a plain signed tag.

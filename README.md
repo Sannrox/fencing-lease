@@ -32,6 +32,7 @@ cargo clippy --locked --all-targets --features postgres,kubernetes -- -D warning
 ```
 
 PostgreSQL backend tests run only when `FENCING_LEASE_POSTGRES_URL` is set.
+Release-path checks: `bash scripts/validate-release.sh`.
 Releases: [RELEASING.md](RELEASING.md).
 
 ## License
