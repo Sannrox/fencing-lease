@@ -1,12 +1,12 @@
 [package]
 name = "fencing-lease"
-version.workspace = true
-edition.workspace = true
-license.workspace = true
-rust-version.workspace = true
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.85"
 description = "Named fencing leases for standalone engines"
 publish = false
-repository = "https://github.com/Sannrox/agent-kit"
+repository = "https://github.com/Sannrox/fencing-lease"
 
 [features]
 default = []
@@ -23,3 +23,6 @@ ureq = { version = "2.12", default-features = false, features = ["json", "tls"],
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
+
+[profile.dev.package."*"]
+debug = false
