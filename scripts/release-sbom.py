@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Write a CycloneDX 1.5 SBOM from `cargo metadata` (locked package)."""
+"""Write a CycloneDX 1.5 SBOM from `cargo metadata` (locked package, all features).
+
+The source archive ships every optional backend, so the SBOM lists them too.
+"""
 
 from __future__ import annotations
 
@@ -25,7 +28,7 @@ def package_version(root: Path) -> str:
 
 def cargo_metadata(root: Path) -> dict:
     raw = subprocess.check_output(
-        ["cargo", "metadata", "--locked", "--format-version", "1"],
+        ["cargo", "metadata", "--locked", "--all-features", "--format-version", "1"],
         cwd=root,
         text=True,
     )

@@ -130,8 +130,10 @@ python3 -c "import json,sys; m=json.loads(open(sys.argv[1]).read()); assert m['s
 
 notes_out="${tmp}/notes"
 mkdir -p "$notes_out"
-bash scripts/release-package.sh --out "$notes_out" --skip-build --skip-test --skip-github --tag v0.1.0 --git-sha "$(git rev-parse HEAD)"
-[[ -s "${notes_out}/RELEASE_NOTES.md" ]] || fail "tag dry-run did not write CHANGELOG notes"
-grep -F "Named leases with acquire, renew, and release" "${notes_out}/RELEASE_NOTES.md" >/dev/null || fail "CHANGELOG notes missing expected 0.1.0 body"
+# Dry-run a tag for the current package version, so a version bump without
+# its CHANGELOG section fails here rather than in the release run.
+version="$(python3 -c 'import re,sys; from pathlib import Path; m=re.search(r"(?ms)^\[package\][^\[]*?^version\s*=\s*\"([^\"]+)\"", Path(sys.argv[1]).read_text()); sys.exit("Cargo.toml has no [package] version") if not m else print(m.group(1))' Cargo.toml)"
+bash scripts/release-package.sh --out "$notes_out" --skip-build --skip-test --skip-github --tag "v${version}" --git-sha "$(git rev-parse HEAD)"
+[[ -s "${notes_out}/RELEASE_NOTES.md" ]] || fail "tag dry-run did not write CHANGELOG notes for ${version}"
 
 printf 'validate-release passed\n'
