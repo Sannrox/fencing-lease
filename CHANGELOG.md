@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.1.1]
+
+No library change from 0.1.0. First release through the family release
+workflow; consumers pinned to `v0.1.0` can move to `v0.1.1` at will.
+
 ### Added
 
 - Family release workflow: a `v*` tag push dispatches `release.yml` from
