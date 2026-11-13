@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.1.2]
+
+No library change from 0.1.0. First published release; `v0.1.1` failed at
+SBOM attestation and has no GitHub Release. Consumers pinned to `v0.1.0`
+can move to `v0.1.2` at will.
+
 ### Fixed
 
 - The release SBOM carries a CycloneDX `serialNumber`, so SBOM attestation
