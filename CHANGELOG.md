@@ -11,4 +11,5 @@
 - Backends: in-memory, local lock file (default), PostgreSQL (`postgres`),
   Kubernetes Lease (`kubernetes`).
 - Moved from `Sannrox/agent-kit` (`crates/fencing-lease`) with its history.
-  No API or behavior change.
+  No API or behavior change. Declared minimum Rust is 1.88, which the locked
+  dependencies already required.
