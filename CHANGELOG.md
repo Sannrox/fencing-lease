@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- The release SBOM carries a CycloneDX `serialNumber`, so SBOM attestation
+  accepts it. The `v0.1.1` release failed on this and has no GitHub Release.
+
 ## [0.1.1]
 
 No library change from 0.1.0. First release through the family release

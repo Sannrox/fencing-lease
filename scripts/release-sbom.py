@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+import uuid
 import sys
 from pathlib import Path
 
@@ -67,6 +68,9 @@ def bom_from_metadata(meta: dict, version: str) -> dict:
     return {
         "bomFormat": "CycloneDX",
         "specVersion": "1.5",
+        # actions/attest-sbom only recognizes CycloneDX with a serialNumber.
+        # Derived from the root purl so a re-run for the same version is stable.
+        "serialNumber": f"urn:uuid:{uuid.uuid5(uuid.NAMESPACE_URL, root_purl)}",
         "version": 1,
         "metadata": {
             "component": {
@@ -103,6 +107,8 @@ def self_test() -> None:
     }
     bom = bom_from_metadata(meta, "0.1.0")
     assert bom["bomFormat"] == "CycloneDX"
+    # The fields actions/attest-sbom requires to accept a CycloneDX document.
+    assert bom["specVersion"] and bom["serialNumber"].startswith("urn:uuid:"), bom
     assert bom["metadata"]["component"]["name"] == "fencing-lease"
     assert bom["metadata"]["component"]["version"] == "0.1.0"
     assert bom["metadata"]["component"]["type"] == "library"
