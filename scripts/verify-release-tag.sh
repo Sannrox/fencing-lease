@@ -69,6 +69,9 @@ verify_release_tag() {
 
   raw="$(git verify-tag --raw "$tag" 2>&1)" || true
   [[ "$raw" == *VALIDSIG* ]] || fail "tag ${tag} is unsigned or the signature is not valid"
+  # gpg reports exactly one of GOODSIG, EXPSIG, EXPKEYSIG, REVKEYSIG, or
+  # BADSIG. VALIDSIG alone still passes an expired or revoked key.
+  grep -q '^\[GNUPG:\] GOODSIG ' <<<"$raw" || fail "tag ${tag} signature is not good (expired, revoked, or bad)"
   status_fpr="$(awk '/^\[GNUPG:\] VALIDSIG / { print $3; exit }' <<<"$raw")"
   primary_fpr="$(awk '/^\[GNUPG:\] VALIDSIG / { print $12; exit }' <<<"$raw")"
   status_fpr="$(normalize_fpr "$status_fpr")"
