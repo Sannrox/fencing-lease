@@ -73,7 +73,9 @@ python3 -c '
 import hashlib, pathlib, sys
 out = pathlib.Path(sys.argv[1])
 lines = []
-for path in sorted(p for p in out.iterdir() if p.is_file() and p.name != "SHA256SUMS"):
+# The manifest is written after the sums and records them; a reused --out
+# must not fold an earlier manifest into SHA256SUMS.
+for path in sorted(p for p in out.iterdir() if p.is_file() and p.name not in ("SHA256SUMS", "fencing-lease-release.json")):
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     lines.append(f"{digest}  {path.name}")
 (out / "SHA256SUMS").write_text("\n".join(lines) + ("\n" if lines else ""))
