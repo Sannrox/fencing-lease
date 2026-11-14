@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- The release attests the final family manifest, and a tagged release fails
+  when gate flags cannot be read instead of publishing empty ones.
+
 ## [0.1.2]
 
 No library change from 0.1.0. First published release; `v0.1.1` failed at
