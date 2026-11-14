@@ -5,8 +5,12 @@ edition = "2024"
 license = "Apache-2.0"
 rust-version = "1.88"
 description = "Named fencing leases for standalone engines"
-publish = false
 repository = "https://github.com/Sannrox/fencing-lease"
+documentation = "https://docs.rs/fencing-lease"
+readme = "README.md"
+keywords = ["lease", "fencing", "failover", "high-availability", "leader-election"]
+categories = ["concurrency"]
+include = ["/src/**", "/README.md", "/LICENSE", "/CHANGELOG.md"]
 
 [features]
 default = []
