@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+
+- The README opens with what the crate is for, when not to use it, and a
+  quickstart that runs as a doctest. The package carries crates.io metadata
+  and ships only the library sources.
+
 ### Fixed
 
 - The release attests the final family manifest, and a tagged release fails

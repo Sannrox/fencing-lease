@@ -29,3 +29,8 @@ pub use store::LeaseStore;
 
 #[cfg(test)]
 mod conformance;
+
+/// Compiles and runs the README examples as doctests.
+#[cfg(doctest)]
+#[doc = include_str!("../README.md")]
+struct ReadmeDoctests;
