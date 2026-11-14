@@ -3,9 +3,10 @@
 Family versioning, tagging, and release policy:
 [tenkai ADR 0040](https://github.com/Sannrox/tenkai/blob/main/docs/decisions/0040-family-versioning-and-release-policy.md).
 
-This page is fencing-lease-local: how a maintainer prepares and tags **this**
-repository. Consumers pin a signed tag (`tag = "vX.Y.Z"`) and move to a new
-release with a pull request of their own.
+This page is fencing-lease-local: how a maintainer prepares, tags, and
+publishes **this** repository. Consumers depend on the crates.io release
+(`fencing-lease = "X.Y.Z"`), which is published from the signed tag, and move
+to a new release with a pull request of their own.
 
 Any change to fencing semantics (token ordering, error classification,
 promotion rules) is a versioned change; in 0.x, a minor bump.
@@ -71,7 +72,8 @@ runs **main's** `release.yml`, never the copy at the tagged commit.
   attaches a signed family release manifest (component, version, git SHA,
   archive digest, attestation URLs, gate flags), and publishes it last
 
-fencing-lease does not publish a container image or a crates.io package.
+fencing-lease does not publish a container image. The crates.io package is
+published by hand after the GitHub Release; see [crates.io](#cratesio).
 
 To retry a failed release, fix the workflow on `main` and run it again for the
 same tag:
@@ -92,6 +94,25 @@ a new version instead. One run per tag executes at a time.
 Pull requests and `workflow_dispatch` without a tag dry-run the same
 packaging path on that ref and never mint attestations or touch a GitHub
 Release.
+
+## crates.io
+
+After the GitHub Release for `vX.Y.Z` is published, a crate owner publishes
+the same commit from a clean checkout of the signed tag:
+
+```sh
+git switch --detach vX.Y.Z
+git verify-tag vX.Y.Z
+cargo publish --locked --dry-run
+cargo publish --locked
+```
+
+`cargo publish` refuses a dirty tree, and `.cargo_vcs_info.json` in the
+package records the tagged commit. Never publish from a commit without a
+release tag. A crates.io version cannot be replaced; a bad one is yanked
+(`cargo yank --version X.Y.Z`) and fixed with a new patch version.
+
+Release candidates are not published to crates.io.
 
 ## Provenance
 

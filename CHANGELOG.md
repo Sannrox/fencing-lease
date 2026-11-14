@@ -2,11 +2,17 @@
 
 ## [Unreleased]
 
+## [0.1.3]
+
+No library API change from 0.1.2. First release on crates.io; consumers
+pinned to a git tag can switch to `fencing-lease = "0.1.3"`.
+
 ### Changed
 
 - The README opens with what the crate is for, when not to use it, and a
   quickstart that runs as a doctest. The package carries crates.io metadata
   and ships only the library sources.
+- Releases are published to crates.io from the signed tag.
 
 ### Fixed
 
