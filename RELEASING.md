@@ -61,14 +61,14 @@ runs **main's** `release.yml`, never the copy at the tagged commit.
 `release.yml` refuses a tagged run that does not start from `main`. It then:
 
 - checks out the tag and fetches the annotated tag object
-- verifies the signed tag with main's `scripts/verify-release-tag.sh` and
+- verifies the signed tag with main's `scripts/release/verify-tag.sh` and
   main's allowed keys against the tagged commit's `Cargo.toml`
 - requires the tagged commit to be on `main`
-- runs the release-script gate and the crate gates (fmt, test, clippy, with
-  and without `postgres,kubernetes`), packages the source archive, and writes
-  the manifest `git_sha` from that commit
-- writes an SBOM, attests provenance, drafts the GitHub Release with
-  `gh release create <tag> --verify-tag` from the matching CHANGELOG section,
+- runs the release tests and the crate gates (fmt, test, clippy, with and
+  without `postgres,kubernetes`), packages the source archive, and writes the
+  manifest `git_sha` from that commit
+- writes an SBOM, attests provenance, drafts the GitHub Release through
+  `scripts/release/github-release.sh` from the matching CHANGELOG section,
   attaches a signed family release manifest (component, version, git SHA,
   archive digest, attestation URLs, gate flags), and publishes it last
 
@@ -94,6 +94,26 @@ a new version instead. One run per tag executes at a time.
 Pull requests and `workflow_dispatch` without a tag dry-run the same
 packaging path on that ref and never mint attestations or touch a GitHub
 Release.
+
+## Release checks
+
+Release logic lives in `scripts/release/`; the workflows only call it.
+`scripts/release/github-release.sh` is the only script that drafts or
+publishes a GitHub Release, and each of its commands refuses a published
+release. Two checks guard the path, locally and in CI:
+
+- `bash scripts/check-workflows.sh` lints every workflow with a pinned
+  workflow linter (actionlint) and a pinned workflow security auditor
+  (zizmor), both verified by SHA-256.
+- `python3 -m unittest discover -s scripts/tests -t .` runs the release
+  tests in `scripts/tests/release/`: one test file per script, plus
+  `test_workflows.py`, which asserts the release invariants on the parsed
+  workflow YAML. Install `scripts/tests/requirements.txt` with
+  `--require-hashes` first. The tests live under `scripts/` because the root
+  `tests/` directory belongs to Cargo.
+
+A change to a release invariant changes the script that enforces it and the
+structural test in the same pull request. Never grep workflow text.
 
 ## crates.io
 

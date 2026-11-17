@@ -96,7 +96,15 @@ cargo clippy --locked --all-targets --features postgres,kubernetes -- -D warning
 ```
 
 PostgreSQL backend tests run only when `FENCING_LEASE_POSTGRES_URL` is set.
-Release-path checks: `bash scripts/validate-release.sh`.
+Release-path checks, the same as CI's `Lint workflows` and `Release tests`
+jobs:
+
+```sh
+bash scripts/check-workflows.sh
+python3 -m pip install --require-hashes -r scripts/tests/requirements.txt
+python3 -m unittest discover -s scripts/tests -t .
+```
+
 Releases: [RELEASING.md](https://github.com/Sannrox/fencing-lease/blob/main/RELEASING.md).
 
 ## License
