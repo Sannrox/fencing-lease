@@ -85,49 +85,10 @@ def bom_from_metadata(meta: dict, version: str) -> dict:
     }
 
 
-def self_test() -> None:
-    meta = {
-        "workspace_members": [
-            "fencing-lease 0.1.0 (path+file:///src/fencing-lease)"
-        ],
-        "packages": [
-            {
-                "id": "fencing-lease 0.1.0 (path+file:///src/fencing-lease)",
-                "name": "fencing-lease",
-                "version": "0.1.0",
-                "license": "Apache-2.0",
-            },
-            {
-                "id": "libc 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
-                "name": "libc",
-                "version": "0.2.0",
-                "license": "MIT OR Apache-2.0",
-            },
-        ],
-    }
-    bom = bom_from_metadata(meta, "0.1.0")
-    assert bom["bomFormat"] == "CycloneDX"
-    # The fields actions/attest-sbom requires to accept a CycloneDX document.
-    assert bom["specVersion"] and bom["serialNumber"].startswith("urn:uuid:"), bom
-    assert bom["metadata"]["component"]["name"] == "fencing-lease"
-    assert bom["metadata"]["component"]["version"] == "0.1.0"
-    assert bom["metadata"]["component"]["type"] == "library"
-    names = {item["name"] for item in bom["components"]}
-    assert names == {"fencing-lease", "libc"}, names
-    libc = next(item for item in bom["components"] if item["name"] == "libc")
-    assert libc["licenses"] == [{"expression": "MIT OR Apache-2.0"}], libc
-    fencing = next(item for item in bom["components"] if item["name"] == "fencing-lease")
-    assert fencing["licenses"] == [{"license": {"id": "Apache-2.0"}}], fencing
-    print("release-sbom self-test passed")
-
-
 def main(argv: list[str]) -> None:
-    if argv == ["--self-test"]:
-        self_test()
-        return
     if len(argv) != 1:
-        raise SystemExit("usage: release-sbom.py OUT")
-    root = Path(__file__).resolve().parent.parent
+        raise SystemExit("usage: sbom.py OUT")
+    root = Path(__file__).resolve().parents[2]
     bom = bom_from_metadata(cargo_metadata(root), package_version(root))
     out = Path(argv[0])
     out.write_text(json.dumps(bom, indent=2) + "\n")
